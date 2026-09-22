@@ -1,0 +1,17 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    uses: codectl/flume/.github/workflows/release-please.yml@main
+    with:
+      release-type: go
+    permissions:
+      contents: write
+      pull-requests: write
