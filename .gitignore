@@ -27,6 +27,12 @@ go.work.sum
 # env file
 .env
 
+# Terraform state and plugins left by validor runs
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+
 # Editor/IDE
 # .idea/
 # .vscode/
