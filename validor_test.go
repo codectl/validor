@@ -8,16 +8,48 @@ import (
 	"testing"
 )
 
-const fixture = "examples/module"
+var fixtureFiles = map[string]string{
+	"main.tf": `resource "terraform_data" "this" {
+  input = var.name
+}
+`,
+	"variables.tf": `variable "name" {
+  type = string
+}
+`,
+	"outputs.tf": `output "name" {
+  value = terraform_data.this.output
+}
+`,
+	"examples/default/main.tf": `module "example" {
+  source = "../../"
 
-// copyFixture copies the fixture module into a fresh directory named like a
-// published module repository and returns the repository root and its
-// examples directory.
+  name = "default"
+}
+`,
+	"examples/complete/main.tf": `module "example" {
+  source = "../../"
+
+  name = "complete"
+}
+
+output "name" {
+  value = module.example.name
+}
+`,
+}
+
 func copyFixture(t *testing.T) (repo, examples string) {
 	t.Helper()
 	repo = filepath.Join(t.TempDir(), "terraform-azure-example")
-	if err := os.CopyFS(repo, os.DirFS(fixture)); err != nil {
-		t.Fatal(err)
+	for name, content := range fixtureFiles {
+		path := filepath.Join(repo, name)
+		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+			t.Fatal(err)
+		}
 	}
 	return repo, filepath.Join(repo, "examples")
 }

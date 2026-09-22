@@ -11,7 +11,7 @@ jobs:
   release:
     uses: codectl/flume/.github/workflows/release-please.yml@main
     with:
-      release-type: go
+      release-type: simple
     permissions:
       contents: write
       pull-requests: write
